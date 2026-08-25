@@ -1,34 +1,37 @@
-# LashMakers Academy — Final Premium Demo
+# LashMakers Academy — Full Vercel Demo Update
 
-## Included
-- Dark premium academy UI
-- Pantone 291 C header/footer/accent
-- Static professional hero image (no slider)
-- White/light pay-per-video course cards
-- Invite-only access
-- Pay per video only
-- Default 5-day video access
-- Continue Learning + progress tracking demo
-- Favorites
-- Student access countdown
-- Optional paid Live classes
-- Admin feature toggles
-- Admin Theme Studio
-- Admin video price/access/visibility controls
-- Admin Certificate Studio
-- Printable / Save-as-PDF completion certificates
+## Latest frontend changes
+- Uses the supplied real classroom image as the single static hero image
+- No hero slider
+- Customer-facing course action now says `Subscribe`
+- Underlying sales model remains one-time payment per video with timed access
+- Frontend Certificates navigation + Certificates page
+- Certificates issued from Admin Certificate Studio appear on the frontend
+- Printable / Save-PDF certificate pages
+- Premium Visit LashMakers Store section
+- Store CTA points to https://lashmakers.com
+- Continue Learning, progress, favorites and access countdown remain included
+- Optional paid Live classes remain controlled from admin
+- Pantone 291 C branding and dark premium UI retained
+
+## Routes
+- `/`
+- `/library`
+- `/certificates`
+- `/admin`
+- `/admin/videos`
+- `/admin/theme`
+- `/admin/settings`
+- `/admin/certificates`
 
 ## Demo invite code
-CLASSIC291
+`CLASSIC291`
 
-## Main routes
-/
- /library
- /admin
- /admin/videos
- /admin/theme
- /admin/settings
- /admin/certificates
+## Deployment
+This is a complete standalone Next.js project for Vercel.
 
-## Demo note
-This is still a browser-storage demo. For production, connect Supabase/auth, Stripe, secure video hosting and server-side expiration.
+No environment variables are required for the demo.
+
+## Important
+Demo settings, purchases, progress, favorites and certificates use browser localStorage.
+Production should connect real authentication, database persistence, payments and secure video delivery.

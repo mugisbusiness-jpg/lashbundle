@@ -105,7 +105,7 @@ export default function Home() {
         <section className="heroStaticSection">
           <div className="content">
             <div className="heroStaticImage">
-              <img src="/lashmakers-hero.jpg" alt="Professional lash training" />
+              <img src="/lashmakers-classroom-hero.jpg" alt="LashMakers live classroom training with instructor and students" />
               <div className="heroStaticOverlay" />
               <div className="heroStaticCopy">
                 <span className="kicker">THE CLASSIC COURSE</span>
@@ -115,7 +115,7 @@ export default function Home() {
               </div>
 
               <div className="heroFeatureBar">
-                <div><strong>Pay Per Video</strong><span>Buy only what you need</span></div>
+                <div><strong>Subscribe Per Video</strong><span>Subscribe only to what you need</span></div>
                 <div><strong>5-Day Access</strong><span>Private access for 5 days</span></div>
                 <div><strong>Private Academy</strong><span>Invite-only learning</span></div>
                 <div><strong>Certificate</strong><span>Issued from admin</span></div>
@@ -172,7 +172,7 @@ export default function Home() {
                 <h2>Choose the training<br/>you need now.</h2>
               </div>
               <p>
-                Every video is purchased separately. Access begins after purchase
+                Each video is subscribed to separately with a one-time payment. Access begins after payment
                 and expires automatically after the selected access period.
               </p>
             </div>
@@ -224,7 +224,7 @@ export default function Home() {
                           className="miniBtn"
                           onClick={() => setCheckout({ kind: "video", item: video })}
                         >
-                          Buy video
+                          Subscribe
                         </button>
                       )}
                     </div>
@@ -275,6 +275,61 @@ export default function Home() {
             </div>
           </section>
         )}
+
+
+        <section className="content frontCertificateSection">
+          <div className="frontCertificateCard">
+            <div className="frontCertificateCopy">
+              <span className="kicker">YOUR ACHIEVEMENT</span>
+              <h2>Collect your LashMakers certificates.</h2>
+              <p>
+                When a certificate is issued from the Academy admin, it appears in your
+                certificate area ready to view, print or save as PDF.
+              </p>
+              <Link href="/certificates" className="btn btnPrimary">
+                View certificates →
+              </Link>
+            </div>
+
+            <div className="frontCertificateVisual">
+              <div className="miniCertificate">
+                <span className="miniCertBrand">LashMakers</span>
+                <small>CERTIFICATE OF COMPLETION</small>
+                <i/>
+                <strong>Classic Course</strong>
+                <span>Professional Education</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="content storeVisitSection">
+          <div className="storeVisitCard">
+            <div className="storeProductArt">
+              <div className="storeBox">LM</div>
+              <div className="storeBottle">AIR</div>
+              <div className="storeTube">LASH</div>
+            </div>
+
+            <div className="storeVisitCopy">
+              <span className="kicker">LASHMAKERS PROFESSIONAL</span>
+              <h2>Training complete?<br/>Shop the tools.</h2>
+              <p>
+                Discover professional LashMakers products designed for artists who want
+                reliable performance behind every set.
+              </p>
+            </div>
+
+            <a
+              className="btn storeVisitBtn"
+              href="https://lashmakers.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Visit LashMakers Store →
+            </a>
+          </div>
+        </section>
 
         <footer className="siteFooter">
           <div className="content footerGrid">
