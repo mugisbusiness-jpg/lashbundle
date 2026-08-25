@@ -38,7 +38,7 @@ export default function InviteGate({ children }: { children: React.ReactNode }) 
       <div className="inviteAura auraOne" />
       <div className="inviteAura auraTwo" />
       <section className="inviteCard">
-        <div className="inviteMonogram">LA</div>
+        <div className="inviteMonogram">LashMakers</div>
         <span className="kicker">PRIVATE EDUCATION</span>
         <h1>Welcome to<br/><em>Classic Course.</em></h1>
         <p>This academy is currently available by invitation only. Enter your private access code to continue.</p>
