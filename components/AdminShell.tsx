@@ -7,6 +7,7 @@ const items = [
   ["/admin", "Overview"],
   ["/admin/videos", "Videos"],
   ["/admin/theme", "Theme Studio"],
+  ["/admin/certificates", "Certificates"],
   ["/admin/settings", "Settings"]
 ];
 

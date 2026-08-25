@@ -64,3 +64,15 @@ export type Purchase = {
   purchasedAt: string;
   expiresAt?: string;
 };
+
+
+export type Certificate = {
+  id: string;
+  studentName: string;
+  studentEmail: string;
+  courseId: string;
+  courseTitle: string;
+  issuedAt: string;
+  certificateNumber: string;
+  instructorName: string;
+};

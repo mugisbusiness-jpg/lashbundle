@@ -1,14 +1,17 @@
 "use client";
 
 import { DEFAULT_LIVES, DEFAULT_SETTINGS, DEFAULT_VIDEOS } from "./defaults";
-import type { AppSettings, LiveClass, Purchase, VideoCourse } from "./types";
+import type { AppSettings, Certificate, LiveClass, Purchase, VideoCourse } from "./types";
 
 const KEYS = {
   settings: "lm_v5_settings",
   videos: "lm_v5_videos",
   lives: "lm_v5_lives",
   purchases: "lm_v5_purchases",
-  invited: "lm_v5_invited"
+  invited: "lm_v5_invited",
+  favorites: "lm_v5_favorites",
+  progress: "lm_v5_progress",
+  certificates: "lm_v5_certificates"
 };
 
 function read<T>(key: string, fallback: T): T {
@@ -89,10 +92,42 @@ export function buyLive(item: LiveClass): Purchase {
   return purchase;
 }
 
+
+export const getFavorites = () => read<string[]>(KEYS.favorites, []);
+export const saveFavorites = (value: string[]) => write(KEYS.favorites, value);
+
+export const getProgress = () => read<Record<string, number>>(KEYS.progress, {});
+export const saveProgress = (value: Record<string, number>) => write(KEYS.progress, value);
+
+export const getCertificates = () => read<Certificate[]>(KEYS.certificates, []);
+export const saveCertificates = (value: Certificate[]) => write(KEYS.certificates, value);
+
+export function issueCertificate(input: {
+  studentName: string;
+  studentEmail: string;
+  courseId: string;
+  courseTitle: string;
+  instructorName: string;
+}): Certificate {
+  const existing = getCertificates();
+  const stamp = Date.now();
+  const certificate: Certificate = {
+    ...input,
+    id: `cert-${stamp}`,
+    issuedAt: new Date().toISOString(),
+    certificateNumber: `LM-${new Date().getFullYear()}-${String(existing.length + 1).padStart(4, "0")}`
+  };
+  saveCertificates([certificate, ...existing]);
+  return certificate;
+}
+
 export function resetDemo() {
   saveSettings(DEFAULT_SETTINGS);
   saveVideos(DEFAULT_VIDEOS);
   saveLives(DEFAULT_LIVES);
   savePurchases([]);
+  saveFavorites([]);
+  saveProgress({});
+  saveCertificates([]);
   revokeInviteAccess();
 }

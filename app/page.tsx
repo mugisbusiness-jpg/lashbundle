@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,10 +8,14 @@ import InviteGate from "../components/InviteGate";
 import {
   buyLive,
   buyVideo,
+  getFavorites,
   getLives,
+  getProgress,
   getPurchases,
   getSettings,
-  getVideos
+  getVideos,
+  saveFavorites,
+  saveProgress
 } from "../lib/storage";
 import type { AppSettings, LiveClass, Purchase, VideoCourse } from "../lib/types";
 
@@ -23,6 +28,8 @@ export default function Home() {
   const [videos, setVideos] = useState<VideoCourse[]>([]);
   const [lives, setLives] = useState<LiveClass[]>([]);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [progress, setProgress] = useState<Record<string, number>>({});
   const [checkout, setCheckout] = useState<Checkout | null>(null);
   const [toast, setToast] = useState("");
 
@@ -31,6 +38,8 @@ export default function Home() {
     setVideos(getVideos());
     setLives(getLives());
     setPurchases(getPurchases());
+    setFavorites(getFavorites());
+    setProgress(getProgress());
   };
 
   useEffect(() => {
@@ -58,89 +67,118 @@ export default function Home() {
 
   const completeCheckout = () => {
     if (!checkout) return;
+
     if (checkout.kind === "video") {
       buyVideo(checkout.item);
+      const next = { ...getProgress(), [checkout.item.id]: 8 };
+      saveProgress(next);
+      setProgress(next);
       setToast(`${checkout.item.title} unlocked for ${checkout.item.accessDays} days.`);
     } else {
       buyLive(checkout.item);
       setToast("Your paid Live seat has been reserved.");
     }
+
     setCheckout(null);
     sync();
-    window.setTimeout(() => setToast(""), 3500);
+    setTimeout(() => setToast(""), 3200);
   };
+
+  const toggleFavorite = (id: string) => {
+    const next = favorites.includes(id)
+      ? favorites.filter((item) => item !== id)
+      : [...favorites, id];
+    setFavorites(next);
+    saveFavorites(next);
+  };
+
+  const continueVideo = Object.entries(progress)
+    .map(([id, percent]) => ({ video: videos.find((v) => v.id === id), percent }))
+    .find((item) => item.video);
 
   return (
     <InviteGate>
       <main className="storefront">
         <Header active="academy" />
-
         {toast && <div className="successToast">{toast}</div>}
 
-        <section className="heroSection">
-          <div className="heroShape shapeOne"/>
-          <div className="heroShape shapeTwo"/>
-          <div className="heroMesh"/>
-          <div className="content heroGrid">
-            <div className="heroText">
-              <span className="kicker">THE CLASSIC COURSE</span>
-              <h1>
-                Learn beautifully.<br/>
-                <em>Master precisely.</em>
-              </h1>
-              <p>
-                Premium lash education, now available class by class.
-                Purchase only the training you need and receive private
-                access for five focused days.
-              </p>
-              <div className="heroButtons">
-                <a href="#classes" className="btn btnInk">Explore classes <span>↗</span></a>
-                <Link href="/library" className="btn btnGhost">My purchases</Link>
+        <section className="heroStaticSection">
+          <div className="content">
+            <div className="heroStaticImage">
+              <img src="/lashmakers-hero.jpg" alt="Professional lash training" />
+              <div className="heroStaticOverlay" />
+              <div className="heroStaticCopy">
+                <span className="kicker">THE CLASSIC COURSE</span>
+                <h1>Master.<br/>Perfect.<br/><em>Elevate.</em></h1>
+                <p>Premium lash education for artists who want precision, confidence and beautiful results.</p>
+                <a href="#classes" className="btn btnPrimary">Explore courses →</a>
               </div>
-            </div>
 
-            <div className="heroArtwork">
-              <div className="artCard artBack">
-                <span>CLASSIC</span>
-              </div>
-              <div className="artCard artFront">
-                <span className="artEyebrow">PRIVATE TRAINING</span>
-                <div className="lashIllustration">
-                  <i/><i/><i/><i/><i/><i/><i/><i/><i/>
-                </div>
-                <strong>Precision<br/>is a practice.</strong>
-                <small>Pay per video • 5-day access</small>
-              </div>
-              <div className="floatingBadge">
-                <strong>291 C</strong>
-                <small>Signature blue</small>
+              <div className="heroFeatureBar">
+                <div><strong>Pay Per Video</strong><span>Buy only what you need</span></div>
+                <div><strong>5-Day Access</strong><span>Private access for 5 days</span></div>
+                <div><strong>Private Academy</strong><span>Invite-only learning</span></div>
+                <div><strong>Certificate</strong><span>Issued from admin</span></div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="content trustStrip">
-          <div><strong>01</strong><span>One-time payment</span></div>
-          <div><strong>02</strong><span>5-day private access</span></div>
-          <div><strong>03</strong><span>No membership required</span></div>
-          <div><strong>04</strong><span>Learn at your pace</span></div>
-        </section>
+        {continueVideo?.video && (
+          <section className="content continueSection">
+            <div className="continueTitleRow">
+              <div>
+                <span className="kicker">CONTINUE LEARNING</span>
+                <h2>Pick up where you left off.</h2>
+              </div>
+              <Link href="/library">View library →</Link>
+            </div>
+
+            <article className="continueCard">
+              <div className="continueThumb"><span>▶</span></div>
+              <div className="continueInfo">
+                <div className="metaRow">
+                  <span>{continueVideo.video.level}</span>
+                  <span>{continueVideo.video.duration}</span>
+                </div>
+                <h3>{continueVideo.video.title}</h3>
+                <div className="progressTrack">
+                  <i style={{ width: `${continueVideo.percent}%` }} />
+                </div>
+                <small>{continueVideo.percent}% watched</small>
+              </div>
+              <button
+                className="miniBtn activeAccess"
+                onClick={() => {
+                  const nextPercent = Math.min(100, continueVideo.percent + 12);
+                  const next = { ...progress, [continueVideo.video!.id]: nextPercent };
+                  setProgress(next);
+                  saveProgress(next);
+                  setToast(`Progress updated to ${nextPercent}%.`);
+                  setTimeout(() => setToast(""), 2200);
+                }}
+              >
+                Resume
+              </button>
+            </article>
+          </section>
+        )}
 
         {settings.features.videoStore && (
           <section id="classes" className="content classSection">
             <div className="sectionIntro">
               <div>
-                <span className="kicker">PAY PER VIDEO</span>
-                <h2>Choose the lesson<br/>you need now.</h2>
+                <span className="kicker">AVAILABLE TRAINING</span>
+                <h2>Choose the training<br/>you need now.</h2>
               </div>
               <p>
-                Every class is purchased individually. Your private viewing
-                window begins immediately after payment and expires automatically.
+                Every video is purchased separately. Access begins after purchase
+                and expires automatically after the selected access period.
               </p>
             </div>
 
             <div className="classGrid">
-              {videos.filter((v) => v.visible).map((video, index) => (
+              {videos.filter((v) => v.visible).map((video) => (
                 <article className={`classCard ${video.featured ? "featured" : ""}`} key={video.id}>
                   <div className="classVisual">
                     <span className="classNumber">{video.number}</span>
@@ -149,7 +187,7 @@ export default function Home() {
                       className="previewButton"
                       onClick={() => alert("Preview player placeholder — demo only.")}
                     >
-                      <span>▶</span>
+                      ▶
                     </button>
                     <small>{video.subtitle}</small>
                   </div>
@@ -159,18 +197,33 @@ export default function Home() {
                       <span>{video.level}</span>
                       <span>{video.duration}</span>
                     </div>
-                    <h3>{video.title}</h3>
+
+                    <div className="titleWithFavorite">
+                      <h3>{video.title}</h3>
+                      <button
+                        className={`favoriteBtn ${favorites.includes(video.id) ? "saved" : ""}`}
+                        onClick={() => toggleFavorite(video.id)}
+                        aria-label="Save to favorites"
+                      >
+                        ♥
+                      </button>
+                    </div>
+
                     <p>{video.description}</p>
+
                     <div className="purchaseRow">
                       <div>
                         <strong>{currency}{video.price}</strong>
-                        <small>{video.accessDays} days access</small>
+                        <small>{video.accessDays}-day access</small>
                       </div>
 
                       {activeVideoIds.has(video.id) ? (
                         <Link href="/library" className="miniBtn activeAccess">Watch now</Link>
                       ) : (
-                        <button className="miniBtn" onClick={() => setCheckout({ kind: "video", item: video })}>
+                        <button
+                          className="miniBtn"
+                          onClick={() => setCheckout({ kind: "video", item: video })}
+                        >
                           Buy video
                         </button>
                       )}
@@ -182,13 +235,20 @@ export default function Home() {
           </section>
         )}
 
+        <section className="content premiumFeatures">
+          <div><strong>Private Access</strong><span>Invite-only academy with protected learning.</span></div>
+          <div><strong>5-Day Window</strong><span>Every purchase has a clear access countdown.</span></div>
+          <div><strong>Resume Watching</strong><span>Progress stays visible in the student library.</span></div>
+          <div><strong>Certificates</strong><span>Generate completion certificates from admin.</span></div>
+        </section>
+
         {settings.features.liveClasses && (
           <section className="liveSection">
             <div className="content liveGrid">
               <div className="liveHeadline">
                 <span className="livePill"><i/> LIVE CLASS</span>
-                <h2>Watch it happen.<br/><em>Ask in real time.</em></h2>
-                <p>Live sessions are optional paid experiences and can be turned off completely from the admin dashboard.</p>
+                <h2>Learn live.<br/><em>Ask in real time.</em></h2>
+                <p>Live sessions are sold separately and can be disabled completely from admin.</p>
               </div>
 
               <div className="liveStack">
@@ -216,24 +276,15 @@ export default function Home() {
           </section>
         )}
 
-        {settings.features.testimonials && (
-          <section className="content manifesto">
-            <span className="kicker">THE LASHMAKER STANDARD</span>
-            <blockquote>
-              “Technique gets stronger when education feels clear, intentional
-              and beautiful enough to return to.”
-            </blockquote>
-            <small>Classic Course • Lashmaker Academy</small>
-          </section>
-        )}
-
         <footer className="siteFooter">
-          <div className="content">
+          <div className="content footerGrid">
             <div>
-              <strong>{settings.academyName}</strong>
-              <small>Private education • {settings.courseName}</small>
+              <strong>LashMakers</strong>
+              <small>ACADEMY</small>
             </div>
-            <span>© 2026</span>
+            <div><b>Classic Course</b><span>Private professional lash education</span></div>
+            <div><b>Access</b><span>Invite only • Pay per video</span></div>
+            <div><b>Signature Blue</b><span>Pantone 291 C</span></div>
           </div>
         </footer>
 

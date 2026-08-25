@@ -1,34 +1,34 @@
-# LashMakers Academy — Dark Pantone Demo
+# LashMakers Academy — Final Premium Demo
 
-Fresh standalone Vercel demo.
-
-## Visual direction
-- Keeps the original dark academy/dashboard feeling
-- Pantone 291 C is used as the brand accent instead of making the whole site light blue
-- Header and footer use Pantone 291 C
-- Important text, prices, active states and small highlights use Pantone 291 C
-- Text-based `LashMakers` logo styled in an elegant serif look inspired by the supplied reference
-
-## Client requirements included
+## Included
+- Dark premium academy UI
+- Pantone 291 C header/footer/accent
+- Static professional hero image (no slider)
+- White/light pay-per-video course cards
 - Invite-only access
-- Pay-per-video only
-- 5-day access by default
-- Paid Live classes
-- Admin toggle to disable Live and other features
+- Pay per video only
+- Default 5-day video access
+- Continue Learning + progress tracking demo
+- Favorites
+- Student access countdown
+- Optional paid Live classes
+- Admin feature toggles
 - Admin Theme Studio
-- Video pricing / visibility / access duration controls
-- Student library and expiry demo
+- Admin video price/access/visibility controls
+- Admin Certificate Studio
+- Printable / Save-as-PDF completion certificates
 
-## Default invitation code
-`CLASSIC291`
+## Demo invite code
+CLASSIC291
 
-## Routes
-- `/`
-- `/library`
-- `/admin`
-- `/admin/videos`
-- `/admin/settings`
-- `/admin/theme`
+## Main routes
+/
+ /library
+ /admin
+ /admin/videos
+ /admin/theme
+ /admin/settings
+ /admin/certificates
 
-## Note
-This remains a functional frontend demo. Browser localStorage is used for demo purchases/settings. Production will require real auth, Stripe, database persistence and secure video access.
+## Demo note
+This is still a browser-storage demo. For production, connect Supabase/auth, Stripe, secure video hosting and server-side expiration.
